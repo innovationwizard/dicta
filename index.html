@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech to Text</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Speech to Text</h1>
+            <p class="subtitle">MLX Whisper · Apple Silicon</p>
+            <div class="ollama-status" id="ollamaStatus">
+                <span class="status-indicator" id="statusIndicator"></span>
+                <span class="status-text" id="statusText">Checking Ollama...</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="upload-section">
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" id="fileInput" accept="audio/*" hidden>
+                    <div class="upload-content">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 2 0 0 1-2 2H5a2 2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        <p class="upload-text">Click to upload or drag and drop</p>
+                        <p class="upload-hint">Supports WAV, MP3, M4A, and other audio formats</p>
+                    </div>
+                </div>
+
+                <div class="file-info" id="fileInfo" style="display: none;">
+                    <div class="file-details">
+                        <span class="file-name" id="fileName"></span>
+                        <button class="btn-remove" id="removeFile">×</button>
+                    </div>
+                </div>
+
+                <div class="options-section" id="optionsSection" style="display: none;">
+                    <h3>Processing Options</h3>
+                    <div class="options-grid">
+                        <label class="option-label">
+                            <input type="checkbox" id="cleanText" checked>
+                            <div>
+                                <span>Clean text</span>
+                                <small>Remove repetitions and fix formatting</small>
+                            </div>
+                        </label>
+                        <label class="option-label">
+                            <input type="checkbox" id="useAI">
+                            <div>
+                                <span>AI refinement</span>
+                                <small id="aiRefinementHint">Checking Ollama status...</small>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <button class="btn-transcribe" id="transcribeBtn" disabled>
+                    <span class="btn-text">Transcribe Audio</span>
+                    <span class="btn-loader" style="display: none;">
+                        <span class="spinner"></span>
+                        Processing...
+                    </span>
+                </button>
+            </div>
+
+            <div class="result-section" id="resultSection" style="display: none;">
+                <div class="result-header">
+                    <h2>Transcription Result</h2>
+                    <button class="btn-download" id="downloadBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 2 0 0 1-2 2H5a2 2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        Download as TXT
+                    </button>
+                </div>
+                <div class="result-content">
+                    <textarea id="transcriptionText" readonly></textarea>
+                </div>
+                
+                <div class="summary-section" id="summarySection">
+                    <h3>Generate Summaries</h3>
+                    <div class="summary-buttons">
+                        <button class="btn-summary" id="btnExecutive" data-type="executive">
+                            Executive Summary
+                        </button>
+                        <button class="btn-summary" id="btnTop10" data-type="top10">
+                            Top 10 Ideas
+                        </button>
+                        <button class="btn-summary" id="btnTop5" data-type="top5">
+                            Top 5 Ideas
+                        </button>
+                        <button class="btn-summary" id="btnTop3" data-type="top3">
+                            Top 3 Ideas
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="summary-result-section" id="summaryResultSection" style="display: none;">
+                <div class="summary-result-header">
+                    <h2 id="summaryTitle">Summary</h2>
+                    <button class="btn-close-summary" id="closeSummaryBtn">×</button>
+                </div>
+                <div class="summary-result-content" id="summaryResultContent">
+                    <!-- Summary content will be inserted here -->
+                </div>
+            </div>
+
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
+
