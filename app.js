@@ -108,8 +108,15 @@ transcribeBtn.addEventListener('click', async () => {
         });
         
         if (!response.ok) {
-            const error = await response.json();
-            throw new Error(error.detail || 'Transcription failed');
+            const ct = response.headers.get('content-type') || '';
+            if (ct.includes('application/json')) {
+                const err = await response.json();
+                throw new Error(err.detail || 'Transcription failed');
+            }
+            if (response.status === 405) {
+                throw new Error('Backend not responding correctly. Restart the server: uvicorn server:app --reload');
+            }
+            throw new Error(`Transcription failed (${response.status}). Is the backend running on port 8000?`);
         }
         
         const data = await response.json();
@@ -192,9 +199,15 @@ async function checkOllamaStatus() {
         });
         
         if (!response.ok) {
-            updateOllamaStatus(false, [], 'Starting Ollama...');
-            // Retry after a delay
-            setTimeout(() => checkOllamaStatus(), 3000);
+            updateOllamaStatus(false, [], 'Backend not available');
+            setTimeout(() => checkOllamaStatus(), 5000);
+            return;
+        }
+        
+        const contentType = response.headers.get('content-type') || '';
+        if (!contentType.includes('application/json')) {
+            updateOllamaStatus(false, [], 'Backend not available. Start server: uvicorn server:app --reload');
+            setTimeout(() => checkOllamaStatus(), 5000);
             return;
         }
         
@@ -226,14 +239,10 @@ async function checkOllamaStatus() {
         }
     } catch (error) {
         console.error('Ollama status check failed:', error);
-        updateOllamaStatus(false, [], 'Starting Ollama automatically...');
-        updateAIFeaturesHint('Starting Ollama. Please wait...');
+        updateOllamaStatus(false, [], 'Backend not available. Start server: uvicorn server:app --reload');
+        updateAIFeaturesHint('Start the backend (port 8000) to use AI features.');
         keepAIFeaturesEnabled();
-        
-        // Retry after a delay
-        setTimeout(() => {
-            checkOllamaStatus();
-        }, 3000);
+        setTimeout(() => checkOllamaStatus(), 5000);
     }
 }
 
