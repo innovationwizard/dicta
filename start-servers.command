@@ -7,18 +7,18 @@ cd "$(dirname "$0")"
 
 echo "🚀 Starting Speech-to-Text servers..."
 echo ""
-echo "Backend server: http://localhost:8000"
+echo "Backend server: http://localhost:8001"
 echo "Frontend server: http://localhost:3000"
 echo ""
 echo "Press Ctrl+C to stop both servers"
 echo ""
 
 # Check if servers are already running
-if lsof -ti:8000 > /dev/null 2>&1; then
-    echo "⚠️  Backend server (port 8000) is already running"
+if lsof -ti:8001 > /dev/null 2>&1; then
+    echo "⚠️  Backend server (port 8001) is already running"
 else
     echo "Starting backend server..."
-    uvicorn server:app --reload > /dev/null 2>&1 &
+    uvicorn server:app --reload --port 8001 > /dev/null 2>&1 &
     BACKEND_PID=$!
     echo "Backend started (PID: $BACKEND_PID)"
 fi

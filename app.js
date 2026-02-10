@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8000';
+const API_URL = 'http://localhost:8001';
 
 // DOM elements
 const fileInput = document.getElementById('fileInput');
@@ -116,7 +116,7 @@ transcribeBtn.addEventListener('click', async () => {
             if (response.status === 405) {
                 throw new Error('Backend not responding correctly. Restart the server: uvicorn server:app --reload');
             }
-            throw new Error(`Transcription failed (${response.status}). Is the backend running on port 8000?`);
+            throw new Error(`Transcription failed (${response.status}). Is the backend running on port 8001?`);
         }
         
         const data = await response.json();
@@ -174,10 +174,10 @@ async function checkAPIHealth() {
     try {
         const response = await fetch(`${API_URL}/health`);
         if (!response.ok) {
-            showError('API server is not responding. Make sure the backend is running on port 8000.');
+            showError('API server is not responding. Make sure the backend is running on port 8001.');
         }
     } catch (error) {
-        showError('Cannot connect to API server. Make sure the backend is running on port 8000.');
+        showError('Cannot connect to API server. Make sure the backend is running on port 8001.');
     }
 }
 
@@ -240,7 +240,7 @@ async function checkOllamaStatus() {
     } catch (error) {
         console.error('Ollama status check failed:', error);
         updateOllamaStatus(false, [], 'Backend not available. Start server: uvicorn server:app --reload');
-        updateAIFeaturesHint('Start the backend (port 8000) to use AI features.');
+        updateAIFeaturesHint('Start the backend (port 8001) to use AI features.');
         keepAIFeaturesEnabled();
         setTimeout(() => checkOllamaStatus(), 5000);
     }
